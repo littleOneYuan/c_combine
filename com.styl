@@ -1,0 +1,75 @@
+.comBox {
+  padding: 6px 8px;
+  background-color: #a197e059;
+  border-radius: 6px;
+  border: 1px solid rgba(93,73,204,0.741);
+  box-shadow: 0px 1px 2px 0px #3c3086cf;
+  &:focus {
+    border: 2px solid rgba(93,73,204,0.741)
+  }
+}
+.comcell, .selcomcell {
+  display: inline-block;
+  margin-right: 10px;
+  background-color: #fff;
+  border-radius: 5px;
+  border: 1px solid #8476d7;
+  height: 26px;
+  span, i {
+    display: inline-block;
+    font-size: 14px;
+    text-align: center;
+    line-height: 24px;
+    color: #8476d7
+    &:hover {
+      cursor: pointer
+    }
+  }
+  span {
+    font-weight: 600;
+    margin: 0px 4px 0px 8px;
+    &:hover {
+      background-color #e7e2ff
+    }
+  }
+  i {
+    flex: 1
+    width: 20px
+    &:hover {
+      font-size: 15px;
+    }
+  }
+}
+.selcomcell {
+  background-color: #8476d7;
+  span, i {
+    color: #fff
+  }
+  span {
+    &:hover {
+      background-color: #8476d7;
+    }
+  }
+  input.name-input {
+    background: #8476d7;
+    color: #fff;
+  }
+}
+input.name-input {
+  width: 80px;
+  background: #fff;
+  margin-left: 10px;
+  line-height: 24px;
+  font-size: 14px;
+  color: #8476d7;
+}
+button.add-btn {
+  width: 40px
+  transition: .2s
+  color: #8073d6;
+  font-weight: 600;
+  background: #fff0;
+  &:hover {
+    font-size: 14px
+  }
+}
