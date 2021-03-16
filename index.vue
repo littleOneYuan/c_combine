@@ -87,21 +87,27 @@ export default {
           com.selected = false
         })
         this.com_arr[idx].selected = true
-        this.$emit('fixfun', 'click', last_sel_id, idx)
         this.$emit('synfun', this.com_arr)
+        this.$emit('fixfun', 'click', last_sel_id, idx)
       }
     },
     // 删除某个组合
     close_com (idx) {
-      alert('删除' + (idx + 1) + 'id: ' + this.com_arr[idx].id)
-      if (this.com_arr[idx].selected) {
-        this.com_arr.splice(idx, 1)
-        this.com_arr[0].selected = true
+      if (this.com_arr.length === 1) {
+        this.$Message.warning('组合不能清空哦-_-')
       } else {
-        this.com_arr.splice(idx, 1)
+        alert('删除' + (idx + 1) + 'id: ' + this.com_arr[idx].id)
+        let cur_idx = 999
+        if (this.com_arr[idx].selected) {
+          this.com_arr.splice(idx, 1)
+          this.com_arr[0].selected = true
+          cur_idx = 0
+        } else {
+          this.com_arr.splice(idx, 1)
+        }
+        this.$emit('synfun', this.com_arr)
+        this.$emit('delfun', idx, cur_idx)
       }
-      this.$emit('delfun', idx)
-      this.$emit('synfun', this.com_arr)
     },
     // 新增组合
     addcom_handle () {
@@ -121,8 +127,8 @@ export default {
           edit: true
         }
         this.com_arr.push(addcom)
-        this.$emit('fixfun', 'add', last_sel_id, addcom)
         this.$emit('synfun', this.com_arr)
+        this.$emit('fixfun', 'add', last_sel_id, addcom)
       }
     }
   },
