@@ -628,7 +628,6 @@ export default {
   methods: {
     // 折线组合处理
     line_joint_handle (motion, l_data) {
-      // mixOption
       let option_temp = {}
       const series_temp = []
       this.g_legend = []
@@ -641,8 +640,7 @@ export default {
           smooth: true
         })
       })
-      if (motion === 'd_search') {
-        debugger
+      if (motion === 'd_search') { // 预测
         option_temp = deepCopy(this.options)
         if (option_temp.legend.data[0] === '导入模拟') { // 从导入到预测
           option_temp = this.option_handle('sim')
@@ -664,20 +662,42 @@ export default {
 
         option_temp.legend.data = this.g_legend
         this.line_temp = l_data.realData
+      } else if (motion === 'search') {
+        option_temp = this.option_handle('mix')
+        option_temp.series = series_temp
+        option_temp.series[this.g_cur_idx].data = l_data
+        option_temp.legend.data = this.g_legend
+        this.line_temp = l_data
       }
       return option_temp
     },
     // 表格数据拼接处理
-    table_joint_handle (com_arr) {
-
+    table_joint_handle (motion, t_data) {
+      const mix_data = []
+      const mix_box = []
+      this.com_arr.forEach(com => {
+        mix_box.push(com.content.table_data)
+      })
+      if (motion === 'd_search') { // 预测
+        mix_box[this.g_cur_idx] = t_data.realData
+        mix_box.unshift(t_data.predData)
+        this.table_temp = t_data.realData
+      } else if (motion === 'search') {
+        mix_box[this.g_cur_idx] = t_data.realData
+        this.table_temp = t_data
+      }
+      mix_box.forEach(data => {
+        mix_data.push(...data)
+      })
+      return mix_data
     },
     syn_handle (newValue) {
       this.com_arr = newValue
-      console.log(this.com_arr, '-----newValue')
     },
     // 上一个组合内容被锁定，并开始填充新增组合内容或者修改当前组合内容的操作，add或者focus点击触发
     fix_handle (motion, last_sel_id, param) {
-      let addcom = {}; let cur_idx
+      // let addcom = {}
+      let cur_idx
       // 上一个选中组合的内容固定操作
       this.com_arr.forEach(com => {
         if (com.id === last_sel_id) {
@@ -689,17 +709,14 @@ export default {
         }
       })
       if (motion === 'add') { // 新增组合，因为新增组合虽然是选中组合但是没有内容所以不需要做赋值动作
-        addcom = param
-        debugger
+        // addcom = param
         this.g_cur_idx = this.com_arr.length - 1
-        console.log('addcom: ' + addcom)
       } else if (motion === 'click') { // 选中某个组合,需要有赋值操作
         cur_idx = param
         this.g_cur_idx = param
-        console.log(this.com_arr[cur_idx].content, '---当前组合内容')
         // 当前组合筛选条件赋值
         const content = this.com_arr[cur_idx].content
-        const [t_con, t_line, t_table] = [content.condition, content.line_data, content.table_data]
+        const [t_con, t_table] = [content.condition, content.table_data]
         this.attr = t_con.peopleAttr
         this.people = t_con.peopleType
         this.res_Media_List = t_con.mediaIds
@@ -712,19 +729,27 @@ export default {
         this.comDate = [t_con.beginTime, t_con.endTime]
         // 表格显示组合拼接表格
         this.tableData = t_table
-        this.option = this.line_joint_handle()
-        this.options.series[0].data = t_line[0]
-        this.options.series[1].data = t_line[1]
+        setTimeout(() => {
+          this.ct_search()
+        }, 500)
       }
     },
     // 删除某个组合
-    del_handle (idx) {
-      console.log(idx, '----delete_idx')
+    del_handle (idx, cur_idx) {
+      if (cur_idx === 999) {
+        this.g_cur_idx -= 1
+      } else {
+        this.g_cur_idx = cur_idx
+      }
+      setTimeout(() => {
+        this.ct_search()
+      }, 500)
     },
     // 组合改名字
     changename_handle (idx, name) {
-      console.log('父：' + idx)
-      console.log('父：' + name)
+      setTimeout(() => {
+        this.ct_search()
+      }, 500)
     },
     // option的分别处理
     option_handle (type) {
@@ -823,9 +848,9 @@ export default {
     forecast_handle (status) {
       let option_temp = {}
       if (status) { // 预测
-        option_temp = this.option_handle('sim')
+        option_temp = this.option_handle('mix')
       } else { // 取消预测
-        option_temp = this.option_handle('ten')
+        option_temp = this.option_handle('mix')
       }
       this.options = option_temp
       setTimeout(() => {
@@ -1085,10 +1110,7 @@ export default {
         danalysisLtvPrediction(req_obj).then(data => {
           if (data && typeof data !== 'symbol') {
             const t_data = deepCopy(data.tableData)
-            const mix_data = deepCopy(t_data.realData)
-            mix_data.push(...t_data.predData)
-            this.tableData = mix_data
-            this.table_temp = mix_data
+            this.tableData = this.table_joint_handle('d_search', t_data)
 
             const l_data = data.lineData
             this.options = this.line_joint_handle('d_search', l_data)
@@ -1097,12 +1119,11 @@ export default {
       } else {
         getLTVReport(req_obj).then(data => {
           if (data && typeof data !== 'symbol') {
-            this.tableData = data.tableData
-            this.table_temp = data.tableData
-            const option_temp = deepCopy(this.options)
-            option_temp.series[0].data = data.lineData
-            this.line_temp.push(data.lineData)
-            this.options = option_temp
+            const t_data = deepCopy(data.tableData)
+            this.tableData = this.table_joint_handle('search', t_data)
+
+            const l_data = data.lineData
+            this.options = this.line_joint_handle('search', l_data)
           }
         })
       }
