@@ -39,6 +39,12 @@ export default {
           edit: false
         }]
       }
+    },
+    max_com: {
+      type: Number,
+      default () {
+        return 100
+      }
     }
   },
   methods: {
@@ -111,7 +117,9 @@ export default {
     },
     // 新增组合
     addcom_handle () {
-      if (isArray(this.com_arr)) {
+      if (this.com_arr.length === this.max_com) {
+        this.$Message.warning('最多只能添加5个组合~.~')
+      } else if (isArray(this.com_arr)) {
         let last_sel_id = 0
         this.com_arr.forEach(com => {
           if (com.selected)last_sel_id = com.id
