@@ -379,6 +379,7 @@
     <div class="combineDiv" v-if="com_show">
       <Ccombine
         :com_arr="com_arr"
+        :max_com="max_com"
         @synfun="syn_handle"
         @fixfun="fix_handle"
         @delfun="del_handle"
@@ -547,6 +548,7 @@ export default {
     const now = formatDate(date, 'yyyy-MM-dd') // 初始化默认时间
     return {
       formval: '',
+      max_com: 5, // 组合最大数量
       g_cur_idx: 0, // 当前聚焦组合index
       g_legend: [], // 图例
       condition_temp: {
@@ -728,7 +730,8 @@ export default {
         this.datetime = [t_con.beginTime, t_con.endTime]
         this.comDate = [t_con.beginTime, t_con.endTime]
         // 表格显示组合拼接表格
-        this.tableData = t_table
+        console.log(t_table)
+        // this.tableData = t_table
         setTimeout(() => {
           this.ct_search()
         }, 500)
@@ -1109,8 +1112,16 @@ export default {
       if (this.is_forecast) {
         danalysisLtvPrediction(req_obj).then(data => {
           if (data && typeof data !== 'symbol') {
+            // 拼接
             const t_data = deepCopy(data.tableData)
             this.tableData = this.table_joint_handle('d_search', t_data)
+
+            // 仅显示当前组合表格数据
+            // const t_data = deepCopy(data.tableData)
+            // const mix_data = deepCopy(t_data.realData)
+            // mix_data.push(...t_data.predData)
+            // this.tableData = mix_data
+            // this.table_temp = mix_data
 
             const l_data = data.lineData
             this.options = this.line_joint_handle('d_search', l_data)
@@ -1119,8 +1130,13 @@ export default {
       } else {
         getLTVReport(req_obj).then(data => {
           if (data && typeof data !== 'symbol') {
+            // 拼接
             const t_data = deepCopy(data.tableData)
             this.tableData = this.table_joint_handle('search', t_data)
+
+            // 仅显示当前组合表格数据
+            // this.tableData = data.tableData
+            // this.table_temp = data.tableData
 
             const l_data = data.lineData
             this.options = this.line_joint_handle('search', l_data)
