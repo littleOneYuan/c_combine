@@ -54,6 +54,19 @@ export default {
     },
     // 组合名字输入完毕
     input_over (idx, name) {
+      var f = 0
+      this.com_arr.forEach(com => {
+        if (com.name === name)f++
+      })
+      if (f > 1) {
+        const name_temp = String(genID(10)).substr(2, 4)
+        this.com_arr[idx].name = name_temp
+        this.$Message.warning({
+          content: '不能有相同组合名，BI已自动为您取名(*╹▽╹*)',
+          duration: 10,
+          closable: true
+        })
+      }
       this.com_arr[idx].edit = false
       // console.log('失焦')
       console.log('子：' + name)
