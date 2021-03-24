@@ -118,7 +118,7 @@ export default {
     // 新增组合
     addcom_handle () {
       if (this.com_arr.length === this.max_com) {
-        this.$Message.warning('最多只能添加5个组合~.~')
+        this.$Message.warning(`最多只能添加${this.max_com}个组合~.~`)
       } else if (isArray(this.com_arr)) {
         let last_sel_id = 0
         this.com_arr.forEach(com => {
