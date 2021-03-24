@@ -102,7 +102,7 @@ export default {
       if (this.com_arr.length === 1) {
         this.$Message.warning('组合不能清空哦-_-')
       } else {
-        alert('删除' + (idx + 1) + 'id: ' + this.com_arr[idx].id)
+        // alert('删除' + (idx + 1) + 'id: ' + this.com_arr[idx].id)
         let cur_idx = 999
         if (this.com_arr[idx].selected) {
           this.com_arr.splice(idx, 1)
@@ -127,7 +127,7 @@ export default {
           com.edit = false
         })
         const id_temp = genID(1)
-        const name_temp = '随机' + this.com_arr.length
+        const name_temp = String(genID(10)).substr(2, 4)
         const addcom = {
           name: name_temp,
           content: {},
