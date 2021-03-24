@@ -3,7 +3,7 @@
     <div class="comBox">
       <div v-for="(item,idx) in com_arr" :key="item.id" class="comcell" :class="{'selcomcell': item.selected}" @click="selcom_handle(idx)">
         <span v-if="!item.edit" @dblclick.stop="name_click(2, idx)" @click.stop="name_click(1, idx)">{{item.name}}</span>
-        <input v-else v-model="item.name" type="text" placeholder="组合名" maxlength="5" class="name-input" @focus="name_input(idx)" @blur="input_over(idx,item.name)" @click.stop>
+        <input v-else v-model="item.name" type="text" placeholder="组合名" maxlength="4" class="name-input" @focus="name_input(idx)" @blur="input_over(idx,item.name)" @click.stop>
         <Icon type="md-close-circle" @click.stop="close_com(idx)" />
       </div>
       <button type="text" class="add-btn" @click="addcom_handle()">+添加</button>
@@ -127,8 +127,9 @@ export default {
           com.edit = false
         })
         const id_temp = genID(1)
+        const name_temp = '随机' + this.com_arr.length
         const addcom = {
-          name: '双击命名',
+          name: name_temp,
           content: {},
           id: id_temp,
           selected: true,
