@@ -52,6 +52,9 @@
         style="width: 200px"
       />
     </div>
+    <div class="refresh-btn">
+      <Button icon="md-refresh" type="dashed" @click="refresh_handle">刷新缓存</Button>
+    </div>
     <div class="tags-group">
       <Tag
         v-for="item in count"
@@ -572,7 +575,7 @@ export default {
         id: 1
       }],
       com_arr: [{ // 默认组合
-        name: '组合6',
+        name: '双击命名',
         content: {},
         id: 0,
         selected: true,
@@ -730,10 +733,10 @@ export default {
         this.datetime = [t_con.beginTime, t_con.endTime]
         this.comDate = [t_con.beginTime, t_con.endTime]
         // 表格显示组合拼接表格
-        console.log(t_table)
-        // this.tableData = t_table
+        // console.log(t_table)
+        this.tableData = t_table
         setTimeout(() => {
-          this.ct_search()
+          this.ct_query()
         }, 500)
       }
     },
@@ -745,13 +748,13 @@ export default {
         this.g_cur_idx = cur_idx
       }
       setTimeout(() => {
-        this.ct_search()
+        this.ct_query()
       }, 500)
     },
     // 组合改名字
     changename_handle (idx, name) {
       setTimeout(() => {
-        this.ct_search()
+        this.ct_query()
       }, 500)
     },
     // option的分别处理
@@ -857,14 +860,14 @@ export default {
       }
       this.options = option_temp
       setTimeout(() => {
-        this.ct_search()
+        this.ct_query()
       }, 500)
     },
     // 选择游戏组
     game_ok () {
       this.gameGroupIds = gameGroup_handle(this.gameGroup).ids_arr
       this.gameGroupKeys = gameGroup_handle(this.gameGroup).keys_arr
-      this.ct_search()
+      this.ct_query()
     },
     game_cancel () {
       this.$Message.info('已取消')
@@ -955,7 +958,7 @@ export default {
             const self = this
 
             setTimeout(() => {
-              self.ct_search()
+              self.ct_query()
             }, 100)
           }
         })
@@ -975,7 +978,7 @@ export default {
     confirmDatetime () {
       this.comDate = JSON.parse(JSON.stringify(this.datetime))
       setTimeout(() => {
-        this.ct_search()
+        this.ct_query()
       }, 500)
     },
     day_clear () {
@@ -1037,7 +1040,7 @@ export default {
       this.sel_Media_List = list
       if (list && !first) {
         setTimeout(() => {
-          this.ct_search()
+          this.ct_query()
         }, 500)
       }
     },
@@ -1088,11 +1091,11 @@ export default {
     // 下拉框控制搜索
     openChange (isopen) {
       if (!isopen) {
-        this.ct_search()
+        this.ct_query()
       }
     },
     // 查询拿到表格以及折线图数据
-    ct_search () {
+    ct_query () {
       this.tableloading = true
       this.chartloading = true
       const req_obj = {
@@ -1113,15 +1116,15 @@ export default {
         danalysisLtvPrediction(req_obj).then(data => {
           if (data && typeof data !== 'symbol') {
             // 拼接
-            const t_data = deepCopy(data.tableData)
-            this.tableData = this.table_joint_handle('d_search', t_data)
+            // const t_data = deepCopy(data.tableData)
+            // this.tableData = this.table_joint_handle('d_search', t_data)
 
             // 仅显示当前组合表格数据
-            // const t_data = deepCopy(data.tableData)
-            // const mix_data = deepCopy(t_data.realData)
-            // mix_data.push(...t_data.predData)
-            // this.tableData = mix_data
-            // this.table_temp = mix_data
+            const t_data = deepCopy(data.tableData)
+            const mix_data = deepCopy(t_data.realData)
+            mix_data.push(...t_data.predData)
+            this.tableData = mix_data
+            this.table_temp = mix_data
 
             const l_data = data.lineData
             this.options = this.line_joint_handle('d_search', l_data)
@@ -1131,12 +1134,12 @@ export default {
         getLTVReport(req_obj).then(data => {
           if (data && typeof data !== 'symbol') {
             // 拼接
-            const t_data = deepCopy(data.tableData)
-            this.tableData = this.table_joint_handle('search', t_data)
+            // const t_data = deepCopy(data.tableData)
+            // this.tableData = this.table_joint_handle('search', t_data)
 
             // 仅显示当前组合表格数据
-            // this.tableData = data.tableData
-            // this.table_temp = data.tableData
+            this.tableData = data.tableData
+            this.table_temp = data.tableData
 
             const l_data = data.lineData
             this.options = this.line_joint_handle('search', l_data)
