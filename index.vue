@@ -58,11 +58,11 @@ export default {
       this.com_arr.forEach(com => {
         if (com.name === name)f++
       })
-      if (f > 1) {
+      if (f > 1 || !name) {
         const name_temp = String(genID(10)).substr(2, 4)
         this.com_arr[idx].name = name_temp
         this.$Message.warning({
-          content: '不能有相同组合名，BI已自动为您取名(*╹▽╹*)',
+          content: '不能有相同组合名或空组合名，BI已自动为您取名(*╹▽╹*)',
           duration: 10,
           closable: true
         })
