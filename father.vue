@@ -484,7 +484,7 @@
         style="width: 100%"
       />
     </Modal>
-    <form style="visibility:hidden;" method="POST" target="_blank" action="https://bi.caohua.com/api/exportLtvDatas">
+    <form style="visibility:hidden;" method="POST" target="_blank" action="https://***">
       <input type="hidden" name="params" :value="formval" />
     </form>
   </div>
